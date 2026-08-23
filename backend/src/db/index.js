@@ -20,7 +20,8 @@ const initializeDb = () => {
       category TEXT,
       price INTEGER,
       stock INTEGER,
-      rating REAL
+      rating REAL,
+      discount INTEGER DEFAULT 0
     )`);
 
     db.run(`CREATE TABLE IF NOT EXISTS orders (
@@ -28,6 +29,11 @@ const initializeDb = () => {
       user_id TEXT,
       total_amount INTEGER,
       status TEXT,
+      customer_name TEXT,
+      address_line TEXT,
+      city TEXT,
+      pincode TEXT,
+      phone_number TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
@@ -51,10 +57,10 @@ const initializeDb = () => {
       if (row.count === 0) {
         console.log('Seeding products...');
         const seedData = JSON.parse(fs.readFileSync(seedPath, 'utf8'));
-        const stmt = db.prepare('INSERT INTO products (id, name, category, price, stock, rating) VALUES (?, ?, ?, ?, ?, ?)');
+        const stmt = db.prepare('INSERT INTO products (id, name, category, price, stock, rating, discount) VALUES (?, ?, ?, ?, ?, ?, ?)');
         
         seedData.forEach(p => {
-          stmt.run(p.id, p.name, p.category, p.price, p.stock, p.rating);
+          stmt.run(p.id, p.name, p.category, p.price, p.stock, p.rating, p.discount || 0);
         });
         
         stmt.finalize();

@@ -1,7 +1,7 @@
 const db = require('../db');
 const crypto = require('crypto');
 
-// Utility to run queries as promises for cleaner transaction handling
+// Utility to run queries as promises
 const run = (query, params = []) => {
   return new Promise((resolve, reject) => {
     db.run(query, params, function (err) {
@@ -30,7 +30,7 @@ const all = (query, params = []) => {
 };
 
 exports.createOrder = async (req, res) => {
-  const { userId, items } = req.body;
+  const { userId, items, address } = req.body;
 
   if (!userId || !items || !items.length) {
     return res.status(400).json({ error: 'userId and items are required' });
@@ -56,19 +56,27 @@ exports.createOrder = async (req, res) => {
         return res.status(400).json({ error: `Insufficient stock for product ${product.name}` });
       }
 
-      totalAmount += product.price * item.quantity;
+      const discount = product.discount || 0;
+      const finalPrice = Math.round(product.price * (1 - discount / 100));
+      
+      totalAmount += finalPrice * item.quantity;
       validatedItems.push({
         ...item,
-        priceAtPurchase: product.price
+        priceAtPurchase: finalPrice,
+        name: product.name
       });
     }
 
-    // Deduct stock and insert order
     const orderId = 'ord-' + crypto.randomBytes(4).toString('hex');
+    const orderStatus = 'paid'; // MOCK: Assume paid for Phase 1.5
     
+    // Address fields
+    const { customerName, addressLine, city, pincode, phoneNumber } = address || {};
+
     await run(
-      'INSERT INTO orders (id, user_id, total_amount, status) VALUES (?, ?, ?, ?)',
-      [orderId, userId, totalAmount, 'pending']
+      `INSERT INTO orders (id, user_id, total_amount, status, customer_name, address_line, city, pincode, phone_number) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [orderId, userId, totalAmount, orderStatus, customerName, addressLine, city, pincode, phoneNumber]
     );
 
     for (const item of validatedItems) {
@@ -94,8 +102,9 @@ exports.createOrder = async (req, res) => {
         id: orderId,
         userId,
         totalAmount,
-        status: 'pending',
-        items: validatedItems
+        status: orderStatus,
+        items: validatedItems,
+        address
       }
     });
 
