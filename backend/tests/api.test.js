@@ -40,7 +40,14 @@ describe('Order API', () => {
       userId: 'test_user_1',
       items: [
         { productId: 'p1', quantity: 2 }
-      ]
+      ],
+      address: {
+        customerName: 'Test Name',
+        addressLine: '123 Main St',
+        city: 'Bangalore',
+        pincode: '560001',
+        phoneNumber: '9999999999'
+      }
     };
 
     const res = await request(app)
@@ -49,9 +56,9 @@ describe('Order API', () => {
 
     expect(res.statusCode).toEqual(201);
     expect(res.body.message).toEqual('Order created successfully');
-    expect(res.body.order.status).toEqual('pending');
+    expect(res.body.order.status).toEqual('paid'); // Updated for Phase 1.5
     expect(res.body.order.items[0].quantity).toEqual(2);
-    
+
     createdOrderId = res.body.order.id;
   });
 
