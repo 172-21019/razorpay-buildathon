@@ -10,6 +10,7 @@ const AIAgentButton = () => {
   const containerRef = useRef(null);
   const recognitionRef = useRef(null);
   const originalTextRef = useRef('');
+  const isAbortingRef = useRef(false);
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -22,13 +23,18 @@ const AIAgentButton = () => {
       recognition.onstart = () => {
         setIsListening(true);
         setMicError('');
+        isAbortingRef.current = false;
       };
 
       recognition.onresult = (event) => {
+        // If the user closed the capsule while listening, ignore any trailing results
+        if (isAbortingRef.current) return;
+
         let interimTranscript = '';
         let finalTranscript = '';
 
-        for (let i = event.resultIndex; i < event.results.length; i++) {
+        // Iterate from 0 to capture the full session history reliably
+        for (let i = 0; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             finalTranscript += transcript;
@@ -37,6 +43,7 @@ const AIAgentButton = () => {
           }
         }
 
+        // Merge flawlessly while preserving the pre-voice existing text
         const original = originalTextRef.current;
         const prefix = original && !original.endsWith(' ') ? original + ' ' : original;
         setInputValue(prefix + finalTranscript + interimTranscript);
@@ -48,13 +55,14 @@ const AIAgentButton = () => {
           setMicError('Microphone access denied');
         } else if (event.error === 'network') {
           setMicError('Network error occurred');
-        } else {
+        } else if (event.error !== 'aborted') {
           setMicError(`Voice error: ${event.error}`);
         }
-        setIsListening(false);
+        setIsListening(false); // Errors must never erase previously typed text
       };
 
       recognition.onend = () => {
+        // Never automatically restart recognition. Just return to idle state.
         setIsListening(false);
       };
 
@@ -62,35 +70,39 @@ const AIAgentButton = () => {
     }
   }, []);
 
+  // Handle closing capsule when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (expanded && containerRef.current && !containerRef.current.contains(event.target)) {
-        setExpanded(false);
+        handleClose();
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [expanded]);
-
-  useEffect(() => {
-    if (!expanded) {
-      if (isListening && recognitionRef.current) {
-        recognitionRef.current.stop();
-        setIsListening(false);
-      }
-      setMicError('');
-    }
   }, [expanded, isListening]);
+
+  const handleClose = () => {
+    if (isListening && recognitionRef.current) {
+      // Discard the current voice-session transcript & restore the original text
+      isAbortingRef.current = true;
+      recognitionRef.current.stop();
+      setIsListening(false);
+      setInputValue(originalTextRef.current);
+    }
+    setExpanded(false);
+  };
 
   const toggleListening = () => {
     if (!recognitionRef.current) return;
     
     if (isListening) {
+      // Manual microphone stop - preserve transcript
       recognitionRef.current.stop();
     } else {
-      originalTextRef.current = inputValue;
+      originalTextRef.current = inputValue; // Snapshot current text
+      isAbortingRef.current = false;
       recognitionRef.current.start();
     }
   };
@@ -134,7 +146,7 @@ const AIAgentButton = () => {
           <button type="submit" className="send-btn" title="Send">
             ➤
           </button>
-          <button type="button" className="close-btn" onClick={() => setExpanded(false)} title="Close">
+          <button type="button" className="close-btn" onClick={handleClose} title="Close">
             ✖
           </button>
         </form>
