@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import './App.css';
+import AIAgentButton from './AIAgentButton';
 
 const API_BASE = '/api';
 
@@ -154,21 +155,25 @@ function App() {
             />
           </div>
           <div className="product-grid">
-            {filteredProducts.map(product => {
-              const finalPrice = getFinalPrice(product);
+            {filteredProducts.length === 0 ? (
+              <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '40px 0', color: '#666' }}>
+                <p>Sorry, product not found..</p>
+              </div>
+            ) : (
+              filteredProducts.map(product => {
+                const finalPrice = getFinalPrice(product);
+              const cartItem = cart.find(item => item.product.id === product.id);
+              const quantityInCart = cartItem ? cartItem.quantity : 0;
+
               return (
-                <div 
-                  key={product.id} 
-                  className="product-card"
-                  onClick={() => {
-                    setSelectedProduct({ ...product, selectedQuantity: 1 });
-                    setCurrentView('detail');
-                  }}
-                >
+                <div key={product.id} className="product-card">
                   {product.discount > 0 && <span className="discount-badge">{product.discount}% OFF</span>}
                   <h3>{product.name}</h3>
-                  <p className="category">{product.category}</p>
-                  <div className="bottom-row">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.9em', color: '#666' }}>
+                    <span className="category">{product.category}</span>
+                    <span className="rating">⭐ {product.rating}</span>
+                  </div>
+                  <div className="bottom-row" style={{ marginBottom: '12px' }}>
                     <span className="price">
                       {product.discount > 0 && <span className="old-price">₹{product.price}</span>}
                       ₹{finalPrice}
@@ -177,10 +182,36 @@ function App() {
                       {product.stock > 0 ? `${product.stock} left` : 'Out of Stock'}
                     </span>
                   </div>
+                  
+                  <div className="card-cart-controls" style={{ display: 'flex', justifyContent: 'center' }}>
+                    {quantityInCart === 0 ? (
+                      <button 
+                        onClick={() => addToCart(product, 1)} 
+                        disabled={product.stock === 0}
+                        className="primary-btn"
+                        style={{ width: '100%', padding: '8px' }}
+                      >
+                        {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+                      </button>
+                    ) : (
+                      <div className="quantity-controls" style={{ margin: '0', display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+                         <button onClick={() => {
+                           if (quantityInCart <= 1) {
+                             removeFromCart(product.id);
+                           } else {
+                             updateCartQuantity(product.id, -1);
+                           }
+                         }}>-</button>
+                         <span>{quantityInCart}</span>
+                         <button onClick={() => updateCartQuantity(product.id, 1)} disabled={quantityInCart >= product.stock}>+</button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
-            })}
+            }))}
           </div>
+          <AIAgentButton />
         </div>
       )}
 
@@ -219,7 +250,7 @@ function App() {
       )}
 
       {currentView === 'cart' && (
-        <div className="cart-view">
+        <div className="cart-view" style={{ paddingBottom: '100px' }}>
           <button onClick={() => setCurrentView('catalog')} className="text-btn">&larr; Continue Shopping</button>
           <h2>Your Cart</h2>
           {cart.length === 0 ? (
@@ -254,6 +285,7 @@ function App() {
               </div>
             </>
           )}
+          <AIAgentButton />
         </div>
       )}
 

@@ -1,0 +1,99 @@
+.ai-agent-container {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.ai-trigger-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 0 20px rgba(99, 102, 241, 0.35);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  outline: none;
+  animation: pulse-glow 3s infinite ease-in-out;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.ai-trigger-btn:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 0 15px rgba(99, 102, 241, 0.3); }
+  50% { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 0 25px rgba(99, 102, 241, 0.6); }
+  100% { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 0 15px rgba(99, 102, 241, 0.3); }
+}
+
+.ai-capsule {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 40px;
+  padding: 8px 16px;
+  width: 450px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 30px rgba(99, 102, 241, 0.45);
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.ai-capsule input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 8px;
+  font-size: 16px;
+  outline: none;
+  color: #333;
+}
+
+.ai-capsule input::placeholder {
+  color: #999;
+}
+
+.ai-capsule button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  color: #555;
+  transition: background 0.2s, color 0.2s;
+  margin-left: 4px;
+}
+
+.ai-capsule button:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #222;
+}
+
+.ai-capsule .send-btn {
+  color: #6366f1;
+}
+.ai-capsule .send-btn:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: #4f46e5;
+}
