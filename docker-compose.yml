@@ -5,6 +5,8 @@ services:
       - "3000:3000"
     volumes:
       - ./backend/data:/app/data
+    env_file:
+      - ./backend/.env
     environment:
       - PORT=3000
     

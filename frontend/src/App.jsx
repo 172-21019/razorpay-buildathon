@@ -17,6 +17,7 @@ function App() {
 
   // Search State
   const [searchTerm, setSearchTerm] = useState('');
+  const [aiSearchResult, setAiSearchResult] = useState(null);
   
   // Checkout Form State
   const [checkoutForm, setCheckoutForm] = useState({
@@ -52,9 +53,20 @@ function App() {
 
   // ----- VIEW: CATALOG -----
   const filteredProducts = useMemo(() => {
+    if (aiSearchResult) {
+      if (aiSearchResult.matchType === 'found') {
+        const aiIds = new Set([
+          aiSearchResult.topPick?.id,
+          ...(aiSearchResult.alternatives?.map(a => a.id) || [])
+        ].filter(Boolean));
+        return products.filter(p => aiIds.has(p.id));
+      } else {
+        return [];
+      }
+    }
     if (!searchTerm) return products;
     return products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [products, searchTerm]);
+  }, [products, searchTerm, aiSearchResult]);
 
   // ----- ACTIONS -----
   const addToCart = (product, quantity) => {
@@ -165,8 +177,17 @@ function App() {
               const cartItem = cart.find(item => item.product.id === product.id);
               const quantityInCart = cartItem ? cartItem.quantity : 0;
 
+              const isTopPick = aiSearchResult?.topPick?.id === product.id;
+              const isAlternative = aiSearchResult?.alternatives?.some(a => a.id === product.id);
+
               return (
-                <div key={product.id} className="product-card">
+                <div 
+                  key={product.id} 
+                  className={`product-card ${isTopPick ? 'ai-top-pick' : ''}`}
+                  style={isTopPick ? { border: '2px solid #6366f1' } : {}}
+                >
+                  {isTopPick && <span style={{ position: 'absolute', top: '-10px', left: '10px', background: '#6366f1', color: '#fff', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 'bold', zIndex: 1 }}>✨ AI Pick</span>}
+                  {isAlternative && !isTopPick && <span style={{ position: 'absolute', top: '-10px', left: '10px', background: '#e0e7ff', color: '#4f46e5', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 'bold', zIndex: 1 }}>Alternative</span>}
                   {product.discount > 0 && <span className="discount-badge">{product.discount}% OFF</span>}
                   <h3>{product.name}</h3>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.9em', color: '#666' }}>
@@ -211,7 +232,7 @@ function App() {
               );
             }))}
           </div>
-          <AIAgentButton />
+          <AIAgentButton onSearchResult={setAiSearchResult} onClear={() => setAiSearchResult(null)} />
         </div>
       )}
 
@@ -285,7 +306,7 @@ function App() {
               </div>
             </>
           )}
-          <AIAgentButton />
+          <AIAgentButton onSearchResult={setAiSearchResult} onClear={() => setAiSearchResult(null)} />
         </div>
       )}
 

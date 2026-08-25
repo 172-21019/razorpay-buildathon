@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './AIAgentButton.css';
 
-const AIAgentButton = () => {
+const AIAgentButton = ({ onSearchResult, onClear }) => {
   const [expanded, setExpanded] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [micError, setMicError] = useState('');
+  const [statusMsg, setStatusMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   const containerRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -70,50 +72,61 @@ const AIAgentButton = () => {
     }
   }, []);
 
-  // Handle closing capsule when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (expanded && containerRef.current && !containerRef.current.contains(event.target)) {
-        handleClose();
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [expanded, isListening]);
-
   const handleClose = () => {
     if (isListening && recognitionRef.current) {
-      // Discard the current voice-session transcript & restore the original text
       isAbortingRef.current = true;
       recognitionRef.current.stop();
       setIsListening(false);
       setInputValue(originalTextRef.current);
     }
     setExpanded(false);
+    setStatusMsg('');
+    if (onClear) onClear();
   };
 
   const toggleListening = () => {
     if (!recognitionRef.current) return;
     
     if (isListening) {
-      // Manual microphone stop - preserve transcript
       recognitionRef.current.stop();
     } else {
-      originalTextRef.current = inputValue; // Snapshot current text
+      originalTextRef.current = inputValue;
       isAbortingRef.current = false;
       recognitionRef.current.start();
     }
   };
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     if (isListening && recognitionRef.current) {
       recognitionRef.current.stop();
     }
-    // This is a pure visual shell for now. No-op execution.
-    setInputValue('');
+    
+    const message = inputValue.trim();
+    if (!message) return;
+
+    setIsLoading(true);
+    setStatusMsg('Thinking...');
+    
+    try {
+      const res = await fetch('http://localhost:3000/api/ai/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+      const data = await res.json();
+      
+      if (data.error) {
+        setStatusMsg('Error: ' + data.error);
+      } else {
+        setStatusMsg(data.message || 'Done.');
+        if (onSearchResult) onSearchResult(data);
+      }
+    } catch (err) {
+      setStatusMsg('Failed to connect to AI service.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -131,19 +144,21 @@ const AIAgentButton = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               autoFocus
+              disabled={isLoading}
             />
             {micError && <span className="mic-error-text">{micError}</span>}
+            {statusMsg && <span className="ai-status-message">{statusMsg}</span>}
           </div>
           <button 
             type="button" 
             className={`mic-btn ${isListening ? 'listening' : ''}`}
             onClick={toggleListening}
             title={!recognitionRef.current ? 'Voice input not supported in this browser' : (isListening ? 'Stop listening' : 'Start voice input')}
-            disabled={!recognitionRef.current}
+            disabled={!recognitionRef.current || isLoading}
           >
             🎤
           </button>
-          <button type="submit" className="send-btn" title="Send">
+          <button type="submit" className="send-btn" title="Send" disabled={isLoading}>
             ➤
           </button>
           <button type="button" className="close-btn" onClick={handleClose} title="Close">
