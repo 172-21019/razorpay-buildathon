@@ -2,8 +2,13 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const dbPath = path.resolve(__dirname, '../../data/ecommerce.db');
-const seedPath = path.resolve(__dirname, '../../data/seed.json');
+const dbDir = path.resolve(__dirname, '../../data');
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
+
+const dbPath = path.resolve(dbDir, 'ecommerce.db');
+const seedPath = path.resolve(dbDir, 'seed.json');
 
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
