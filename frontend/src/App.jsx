@@ -18,6 +18,26 @@ function App() {
   // Search State
   const [searchTerm, setSearchTerm] = useState('');
   const [aiSearchResult, setAiSearchResult] = useState(null);
+
+  // Payment UI State
+  const [paymentLinkData, setPaymentLinkData] = useState(null);
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    if (currentView === 'payment_verification' && paymentLinkData) {
+      const timer = setInterval(() => {
+        const now = Math.floor(Date.now() / 1000);
+        const remaining = paymentLinkData.expiresAt - now;
+        if (remaining <= 0) {
+          setCountdown(0);
+          clearInterval(timer);
+        } else {
+          setCountdown(remaining);
+        }
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [currentView, paymentLinkData]);
   
   // Checkout Form State
   const [checkoutForm, setCheckoutForm] = useState({
@@ -103,6 +123,7 @@ function App() {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     try {
+      // Step 1: Create Order as pending
       const res = await fetch(`${API_BASE}/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -116,10 +137,67 @@ function App() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to place order');
       
-      setOrderData(data.order);
-      setCart([]); // Clear cart
-      setCurrentView('confirmation');
-      fetchProducts(); // Refresh stock in background
+      const newOrder = data.order;
+      setOrderData(newOrder);
+
+      // Step 2: Create Payment Link
+      const paymentRes = await fetch(`${API_BASE}/orders/${newOrder.id}/create-payment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const paymentData = await paymentRes.json();
+      
+      if (!paymentRes.ok) throw new Error(paymentData.error || 'Failed to create payment link');
+
+      setPaymentLinkData(paymentData);
+
+      // Open Razorpay payment link automatically
+      window.open(paymentData.shortUrl, '_blank');
+      
+      // Move to verification view
+      setCurrentView('payment_verification');
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  };
+
+  const handleVerifyPayment = async () => {
+    if (!orderData) return;
+    try {
+      const res = await fetch(`${API_BASE}/orders/${orderData.id}/verify-payment`, {
+        method: 'POST'
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || 'Failed to verify payment');
+      
+      if (data.status === 'paid') {
+        // Payment successful
+        setOrderData(prev => ({ ...prev, status: 'paid' }));
+        setCart([]); // Clear cart only after payment is confirmed
+        setCurrentView('confirmation');
+        fetchProducts(); // Refresh stock in background
+      } else {
+        alert('Payment not yet confirmed. Please complete the payment on the Razorpay page and try again. Status: ' + data.status);
+      }
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  };
+
+  const handleCancelPayment = async () => {
+    if (!orderData) return;
+    try {
+      const res = await fetch(`${API_BASE}/orders/${orderData.id}/cancel-payment`, {
+        method: 'POST'
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || 'Failed to cancel payment');
+      
+      // Return to checkout or cart
+      setCurrentView('checkout');
+      setPaymentLinkData(null);
     } catch (err) {
       alert(`Error: ${err.message}`);
     }
@@ -343,6 +421,82 @@ function App() {
                 </div>
              </div>
            </div>
+        </div>
+      )}
+
+      {currentView === 'redirect_verifying' && (
+        <div className="payment-verification-view" style={{ textAlign: 'center', padding: '40px' }}>
+          <h2>Verifying your payment...</h2>
+          <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: '40px', height: '40px', border: '4px solid #f3f3f3', borderTop: '4px solid #6366f1', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+          </div>
+          <p style={{ margin: '10px 0', fontSize: '1.1em', color: '#555' }}>
+            Please wait while we confirm your payment status.
+          </p>
+          <style>{`
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+          `}</style>
+        </div>
+      )}
+
+      {currentView === 'payment_verification' && orderData && (
+        <div className="payment-verification-view" style={{ textAlign: 'center', padding: '40px' }}>
+          {countdown > 0 ? (
+            <>
+              <h2>Waiting for payment</h2>
+              <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'center' }}>
+                <div style={{ width: '40px', height: '40px', border: '4px solid #f3f3f3', borderTop: '4px solid #6366f1', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+              </div>
+              <p style={{ margin: '10px 0', fontSize: '1.1em', color: '#555' }}>
+                Redirecting to payment site...
+              </p>
+              
+              <p style={{ margin: '20px 0', fontSize: '1.2em', fontWeight: 'bold', color: '#ef4444' }}>
+                Expires in {Math.floor(countdown / 60).toString().padStart(2, '0')}:{(countdown % 60).toString().padStart(2, '0')}
+              </p>
+              
+              <div style={{ margin: '30px 0' }}>
+                <button 
+                  onClick={() => window.open(paymentLinkData.shortUrl, '_blank')} 
+                  className="text-btn" 
+                  style={{ textDecoration: 'underline', color: '#6366f1' }}
+                >
+                  Site didn't redirect? Click here
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 style={{ color: '#ef4444' }}>Payment link expired</h2>
+              <p style={{ margin: '20px 0', fontSize: '1.1em', color: '#555' }}>
+                The 15-minute payment window has ended.
+              </p>
+            </>
+          )}
+
+          {countdown > 0 ? (
+            <div style={{ margin: '30px 0', display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+              <button onClick={handleVerifyPayment} className="primary-btn" style={{ padding: '12px 24px', fontSize: '1.1em' }}>
+                I have completed the payment
+              </button>
+              <button onClick={handleCancelPayment} className="text-btn" style={{ color: '#ef4444' }}>
+                Cancel Payment
+              </button>
+            </div>
+          ) : (
+            <div style={{ margin: '30px 0' }}>
+              <button onClick={() => { setCurrentView('checkout'); setPaymentLinkData(null); }} className="primary-btn" style={{ padding: '12px 24px', fontSize: '1.1em' }}>
+                Return to Checkout
+              </button>
+            </div>
+          )}
+          
+          <p style={{ color: '#888', fontSize: '0.9em', marginTop: '20px' }}>
+            Order ID: {orderData.id} • Amount: ₹{orderData.totalAmount}
+          </p>
+          <style>{`
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+          `}</style>
         </div>
       )}
 
