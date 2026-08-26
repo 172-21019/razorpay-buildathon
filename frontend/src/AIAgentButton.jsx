@@ -29,13 +29,11 @@ const AIAgentButton = ({ onSearchResult, onClear }) => {
       };
 
       recognition.onresult = (event) => {
-        // If the user closed the capsule while listening, ignore any trailing results
         if (isAbortingRef.current) return;
 
         let interimTranscript = '';
         let finalTranscript = '';
 
-        // Iterate from 0 to capture the full session history reliably
         for (let i = 0; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
@@ -45,7 +43,6 @@ const AIAgentButton = ({ onSearchResult, onClear }) => {
           }
         }
 
-        // Merge flawlessly while preserving the pre-voice existing text
         const original = originalTextRef.current;
         const prefix = original && !original.endsWith(' ') ? original + ' ' : original;
         setInputValue(prefix + finalTranscript + interimTranscript);
@@ -60,11 +57,10 @@ const AIAgentButton = ({ onSearchResult, onClear }) => {
         } else if (event.error !== 'aborted') {
           setMicError(`Voice error: ${event.error}`);
         }
-        setIsListening(false); // Errors must never erase previously typed text
+        setIsListening(false);
       };
 
       recognition.onend = () => {
-        // Never automatically restart recognition. Just return to idle state.
         setIsListening(false);
       };
 
@@ -80,7 +76,6 @@ const AIAgentButton = ({ onSearchResult, onClear }) => {
       setInputValue(originalTextRef.current);
     }
     setExpanded(false);
-    setStatusMsg('');
     if (onClear) onClear();
   };
 
@@ -98,13 +93,17 @@ const AIAgentButton = ({ onSearchResult, onClear }) => {
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (isListening && recognitionRef.current) {
-      recognitionRef.current.stop();
-    }
     
     const message = inputValue.trim();
     if (!message) return;
 
+    if (isListening && recognitionRef.current) {
+      isAbortingRef.current = true;
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
+    
+    setInputValue('');
     setIsLoading(true);
     setStatusMsg('Thinking...');
     
@@ -138,6 +137,21 @@ const AIAgentButton = ({ onSearchResult, onClear }) => {
       ) : (
         <form className="ai-capsule" onSubmit={handleSend}>
           <div className="input-wrapper">
+            {statusMsg && (
+              <div className="ai-status-message" style={{
+                whiteSpace: 'normal',
+                top: 'auto',
+                bottom: '100%',
+                marginBottom: '10px',
+                left: 0,
+                width: '100%',
+                pointerEvents: 'auto',
+                boxSizing: 'border-box',
+                lineHeight: '1.4'
+              }}>
+                {statusMsg}
+              </div>
+            )}
             <input 
               type="text" 
               placeholder="Ask me anything..." 
@@ -147,7 +161,6 @@ const AIAgentButton = ({ onSearchResult, onClear }) => {
               disabled={isLoading}
             />
             {micError && <span className="mic-error-text">{micError}</span>}
-            {statusMsg && <span className="ai-status-message">{statusMsg}</span>}
           </div>
           <button 
             type="button" 
@@ -168,6 +181,6 @@ const AIAgentButton = ({ onSearchResult, onClear }) => {
       )}
     </div>
   );
-};
+}
 
 export default AIAgentButton;

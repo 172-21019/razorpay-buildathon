@@ -18,13 +18,14 @@ exports.processMessage = async (req, res) => {
         responseSchema: {
           type: Type.OBJECT,
           properties: {
-            productName: { 
-              type: Type.STRING, 
-              description: "The name of the product being searched for" 
+            productName: {
+              type: Type.STRING,
+              description: "The name of the product being searched for"
             },
-            budget: { 
-              type: Type.NUMBER, 
-              description: "The numerical budget limit for the product if mentioned, otherwise null" 
+            budget: {
+              type: Type.NUMBER,
+              nullable: true,
+              description: "The numerical budget limit for the product if mentioned, otherwise null"
             }
           },
           required: ["productName"]
