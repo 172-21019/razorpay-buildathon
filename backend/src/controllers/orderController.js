@@ -1,4 +1,4 @@
-const db = require('../db');
+const { db, logAuditEvent } = require('../db');
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
 
@@ -108,6 +108,8 @@ exports.createOrder = async (req, res) => {
     }
 
     await run('COMMIT');
+    
+    logAuditEvent(orderId, 'order_created', { items, address }, { orderId, totalAmount, status: orderStatus });
 
     res.status(201).json({
       message: 'Order created successfully',
@@ -205,6 +207,8 @@ exports.createPayment = async (req, res) => {
       [paymentLink.id, paymentLink.short_url, expiresAt, 'pending', id]
     );
 
+    logAuditEvent(id, 'payment_link_created', { orderId: id, amount: paymentLinkRequest.amount / 100 }, { razorpay_payment_link_id: paymentLink.id, expires_at: expiresAt });
+
     res.json({
       paymentLinkId: paymentLink.id,
       shortUrl: paymentLink.short_url,
@@ -235,6 +239,8 @@ exports.verifyPayment = async (req, res) => {
     // Call Razorpay to verify true status
     const rzp = getRazorpay();
     const paymentLink = await rzp.paymentLink.fetch(order.razorpay_payment_link_id);
+    
+    logAuditEvent(id, 'payment_verification_checked', { orderId: id }, { razorpay_status: paymentLink.status, verified: paymentLink.status === 'paid' });
 
     if (paymentLink.status === 'paid') {
       // Payment confirmed! Now we update status and deduct stock atomically
@@ -251,6 +257,8 @@ exports.verifyPayment = async (req, res) => {
       }
       
       await run('COMMIT');
+      
+      logAuditEvent(id, 'payment_confirmed', null, { orderId: id, finalStatus: 'paid' });
 
       return res.json({ status: 'paid', message: 'Payment successful' });
     } else {
@@ -297,6 +305,8 @@ exports.cancelPayment = async (req, res) => {
 
     // Update local order to cancelled, but keep the razorpay references
     await run('UPDATE orders SET status = ? WHERE id = ?', ['cancelled', id]);
+    
+    logAuditEvent(id, 'payment_cancelled', null, { orderId: id, razorpay_payment_link_id: order.razorpay_payment_link_id });
     
     res.json({ message: 'Payment link cancelled successfully' });
   } catch (error) {

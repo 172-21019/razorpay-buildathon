@@ -52,6 +52,15 @@ const initializeDb = () => {
       FOREIGN KEY (product_id) REFERENCES products (id)
     )`);
 
+    db.run(`CREATE TABLE IF NOT EXISTS agent_audit_log (
+      id TEXT PRIMARY KEY,
+      session_id TEXT,
+      event_type TEXT,
+      input TEXT,
+      output TEXT,
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
     // Seed Data if empty
     db.get('SELECT COUNT(*) as count FROM products', (err, row) => {
       if (err) {
@@ -77,4 +86,27 @@ const initializeDb = () => {
 
 initializeDb();
 
-module.exports = db;
+const logAuditEvent = (sessionId, eventType, input, output) => {
+  return new Promise((resolve) => {
+    try {
+      const crypto = require('crypto');
+      const id = crypto.randomUUID();
+      const inputStr = typeof input === 'object' ? JSON.stringify(input) : input;
+      const outputStr = typeof output === 'object' ? JSON.stringify(output) : output;
+      
+      db.run(
+        'INSERT INTO agent_audit_log (id, session_id, event_type, input, output) VALUES (?, ?, ?, ?, ?)',
+        [id, sessionId, eventType, inputStr, outputStr],
+        (err) => {
+          if (err) console.error('Failed to write audit log:', err.message);
+          resolve(); // Never reject to avoid breaking app logic
+        }
+      );
+    } catch (err) {
+      console.error('Failed to process audit log:', err.message);
+      resolve();
+    }
+  });
+};
+
+module.exports = { db, logAuditEvent };

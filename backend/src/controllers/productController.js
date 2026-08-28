@@ -1,4 +1,4 @@
-const db = require('../db');
+const { db } = require('../db');
 
 exports.getProducts = (req, res) => {
   const { category, search } = req.query;

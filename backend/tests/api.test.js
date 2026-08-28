@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../src/server');
-const db = require('../src/db');
+const { db } = require('../src/db');
 
 // Ensure database is ready before running tests
 beforeAll(done => {
@@ -56,7 +56,7 @@ describe('Order API', () => {
 
     expect(res.statusCode).toEqual(201);
     expect(res.body.message).toEqual('Order created successfully');
-    expect(res.body.order.status).toEqual('paid'); // Updated for Phase 1.5
+    expect(res.body.order.status).toEqual('pending');
     expect(res.body.order.items[0].quantity).toEqual(2);
 
     createdOrderId = res.body.order.id;
@@ -99,5 +99,35 @@ describe('Order API', () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body.error).toContain('Insufficient stock');
+  });
+});
+
+describe('Payment API', () => {
+  it('should reject verify-payment for a non-existent order', async () => {
+    const res = await request(app)
+      .post('/api/orders/ord-invalid123/verify-payment')
+      .send();
+
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.error).toEqual('Order not found');
+  });
+
+  it('should reject verify-payment for an order without a payment link', async () => {
+    // Create a fresh pending order first
+    const orderData = {
+      userId: 'test_user_payment',
+      items: [{ productId: 'p1', quantity: 1 }]
+    };
+    const orderRes = await request(app).post('/api/orders').send(orderData);
+    const orderId = orderRes.body.order.id;
+
+    // Now try to verify payment
+    const verifyRes = await request(app)
+      .post(`/api/orders/${orderId}/verify-payment`)
+      .send();
+
+    // Since no payment link was created for this order, it should return 400
+    expect(verifyRes.statusCode).toEqual(400);
+    expect(verifyRes.body.error).toEqual('No payment link associated with this order');
   });
 });

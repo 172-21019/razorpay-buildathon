@@ -1,5 +1,6 @@
 const { GoogleGenAI, Type } = require('@google/genai');
-const db = require('../db');
+const { db, logAuditEvent } = require('../db');
+const crypto = require('crypto');
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -8,6 +9,8 @@ exports.processSearch = async (req, res) => {
   if (!message) {
     return res.status(400).json({ error: 'Message is required' });
   }
+
+  const sessionId = crypto.randomUUID();
 
   try {
     const response = await ai.models.generateContent({
@@ -35,27 +38,35 @@ exports.processSearch = async (req, res) => {
     const parsedData = JSON.parse(response.text);
     const { productName, budget } = parsedData;
 
+    logAuditEvent(sessionId, 'intent_parsed', message, { productName, budget });
+
     if (!productName || String(productName).trim().toLowerCase() === 'null' || String(productName).trim() === '') {
+      const msg = "I couldn't quite understand that as a product search — try something like 'find headphones under ₹5000'.";
+      logAuditEvent(sessionId, 'unclear_request', null, msg);
       return res.json({
         topPick: null,
         alternatives: [],
         matchType: 'unclear',
-        message: "I couldn't quite understand that as a product search — try something like 'find headphones under ₹5000'."
+        message: msg
       });
     }
 
     db.all('SELECT * FROM products WHERE name LIKE ? AND stock > 0', [`%${String(productName).trim()}%`], (err, rows) => {
+      logAuditEvent(sessionId, 'catalog_searched', { productName }, rows ? rows.length : 0);
+      
       if (err) {
         console.error('DB query error:', err);
         return res.status(500).json({ error: 'Failed to search database' });
       }
 
       if (rows.length === 0) {
+        const msg = `I couldn't find any products matching "${productName}".`;
+        logAuditEvent(sessionId, 'no_match_found', null, msg);
         return res.json({
           topPick: null,
           alternatives: [],
           matchType: 'no_match',
-          message: `I couldn't find any products matching "${productName}".`
+          message: msg
         });
       }
 
@@ -76,12 +87,16 @@ exports.processSearch = async (req, res) => {
         }
       }
 
+      logAuditEvent(sessionId, 'budget_filtered', { budget, candidateCount: rows.length }, { validCount: validProducts.length, excludedCount: rows.length - validProducts.length });
+
       if (validProducts.length === 0) {
+        const msg = `I found "${productName}", but the lowest price is ₹${lowestPrice}, which is over your budget of ₹${budget}.`;
+        logAuditEvent(sessionId, 'no_match_found', null, msg);
         return res.json({
           topPick: null,
           alternatives: [],
           matchType: 'no_match',
-          message: `I found "${productName}", but the lowest price is ₹${lowestPrice}, which is over your budget of ₹${budget}.`
+          message: msg
         });
       }
 
@@ -90,6 +105,8 @@ exports.processSearch = async (req, res) => {
 
       const topPick = validProducts[0];
       const alternatives = validProducts.slice(1);
+
+      logAuditEvent(sessionId, 'products_ranked', null, { topPickId: topPick.id, topPickName: topPick.name, alternativeIds: alternatives.map(a => a.id) });
 
       res.json({
         topPick,
