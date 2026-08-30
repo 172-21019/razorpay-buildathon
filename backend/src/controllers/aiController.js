@@ -17,7 +17,7 @@ exports.processSearch = async (req, res) => {
       model: 'gemini-3.1-flash-lite',
       contents: message,
       config: {
-        systemInstruction: "You are a product search intent extractor. If the user message is not a recognizable product search (e.g., gibberish, weather, greetings), return productName as null. Otherwise, extract the productName being searched for. Name the budget field clearly as the user's budget, if provided. Return ONLY JSON.",
+        systemInstruction: "You are a product search intent extractor. If the user message is not a recognizable product search (e.g., gibberish, weather, greetings), return productName as null. Otherwise, extract the productName being searched for. Name the budget field clearly as the user's budget, if provided. If the user does not mention a budget, explicitly return null for the budget field (do not return 0). Return ONLY JSON.",
         responseMimeType: 'application/json',
         responseSchema: {
           type: Type.OBJECT,
@@ -28,7 +28,8 @@ exports.processSearch = async (req, res) => {
             },
             budget: { 
               type: Type.NUMBER, 
-              description: "The numerical budget limit for the product if mentioned, otherwise null" 
+              description: "The numerical budget limit for the product if mentioned, otherwise null",
+              nullable: true
             }
           }
         }
@@ -46,6 +47,7 @@ exports.processSearch = async (req, res) => {
       return res.json({
         topPick: null,
         alternatives: [],
+        excludedByBudget: [],
         matchType: 'unclear',
         message: msg
       });
@@ -61,10 +63,11 @@ exports.processSearch = async (req, res) => {
 
       if (rows.length === 0) {
         const msg = `I couldn't find any products matching "${productName}".`;
-        logAuditEvent(sessionId, 'no_match_found', null, msg);
+        logAuditEvent(sessionId, 'no_match_found', null, { message: msg, excludedIds: [] });
         return res.json({
           topPick: null,
           alternatives: [],
+          excludedByBudget: [],
           matchType: 'no_match',
           message: msg
         });
@@ -72,9 +75,11 @@ exports.processSearch = async (req, res) => {
 
       let lowestPrice = Infinity;
       const validProducts = [];
+      const excludedProducts = [];
 
       for (const row of rows) {
         const discountedPrice = Math.round(row.price * (1 - row.discount / 100));
+        row.finalPrice = discountedPrice;
         
         if (discountedPrice < lowestPrice) {
           lowestPrice = discountedPrice;
@@ -83,18 +88,22 @@ exports.processSearch = async (req, res) => {
         const hasBudget = budget !== null && budget !== undefined && budget > 0;
         
         if (!hasBudget || discountedPrice <= budget) {
-          validProducts.push({ ...row, finalPrice: discountedPrice });
+          validProducts.push(row);
+        } else {
+          excludedProducts.push(row);
         }
       }
 
       logAuditEvent(sessionId, 'budget_filtered', { budget, candidateCount: rows.length }, { validCount: validProducts.length, excludedCount: rows.length - validProducts.length });
 
       if (validProducts.length === 0) {
+        excludedProducts.sort((a, b) => a.finalPrice - b.finalPrice);
         const msg = `I found "${productName}", but the lowest price is ₹${lowestPrice}, which is over your budget of ₹${budget}.`;
-        logAuditEvent(sessionId, 'no_match_found', null, msg);
+        logAuditEvent(sessionId, 'no_match_found', null, { message: msg, excludedIds: excludedProducts.map(p => p.id) });
         return res.json({
           topPick: null,
           alternatives: [],
+          excludedByBudget: excludedProducts,
           matchType: 'no_match',
           message: msg
         });
@@ -111,6 +120,7 @@ exports.processSearch = async (req, res) => {
       res.json({
         topPick,
         alternatives,
+        excludedByBudget: excludedProducts,
         matchType: 'found',
         message: `I found ${validProducts.length} option(s) for "${productName}". Here is the top pick.`
       });

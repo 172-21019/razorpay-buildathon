@@ -22,7 +22,8 @@ exports.getProducts = (req, res) => {
 
   db.all(query, params, (err, rows) => {
     if (err) {
-      return res.status(500).json({ error: err.message });
+      console.error('Database error:', err);
+      return res.status(500).json({ error: 'Failed to retrieve products' });
     }
     res.json(rows);
   });
@@ -32,7 +33,8 @@ exports.getProductById = (req, res) => {
   const { id } = req.params;
   db.get('SELECT * FROM products WHERE id = ?', [id], (err, row) => {
     if (err) {
-      return res.status(500).json({ error: err.message });
+      console.error('Database error:', err);
+      return res.status(500).json({ error: 'Failed to retrieve product' });
     }
     if (!row) {
       return res.status(404).json({ error: 'Product not found' });

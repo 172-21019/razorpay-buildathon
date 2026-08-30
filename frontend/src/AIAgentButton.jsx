@@ -102,10 +102,12 @@ const AIAgentButton = ({ onSearchResult, onClear }) => {
       recognitionRef.current.stop();
       setIsListening(false);
     }
+    originalTextRef.current = '';
     
     setInputValue('');
     setIsLoading(true);
     setStatusMsg('Thinking...');
+    if (onClear) onClear();
     
     try {
       const res = await fetch('http://localhost:3000/api/ai/search', {

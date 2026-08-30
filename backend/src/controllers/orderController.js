@@ -146,7 +146,8 @@ exports.getOrderById = async (req, res) => {
       items
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Get order error:', error);
+    res.status(500).json({ error: 'Failed to retrieve order' });
   }
 };
 

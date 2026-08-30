@@ -77,9 +77,13 @@ function App() {
       if (aiSearchResult.matchType === 'found') {
         const aiIds = new Set([
           aiSearchResult.topPick?.id,
-          ...(aiSearchResult.alternatives?.map(a => a.id) || [])
+          ...(aiSearchResult.alternatives?.map(a => a.id) || []),
+          ...(aiSearchResult.excludedByBudget?.map(a => a.id) || [])
         ].filter(Boolean));
         return products.filter(p => aiIds.has(p.id));
+      } else if (aiSearchResult.matchType === 'no_match' && aiSearchResult.excludedByBudget?.length > 0) {
+        const excludedIds = new Set(aiSearchResult.excludedByBudget.map(a => a.id));
+        return products.filter(p => excludedIds.has(p.id));
       } else {
         return [];
       }
@@ -257,15 +261,20 @@ function App() {
 
               const isTopPick = aiSearchResult?.topPick?.id === product.id;
               const isAlternative = aiSearchResult?.alternatives?.some(a => a.id === product.id);
+              const isOverBudget = aiSearchResult?.excludedByBudget?.some(a => a.id === product.id);
 
               return (
                 <div 
                   key={product.id} 
-                  className={`product-card ${isTopPick ? 'ai-top-pick' : ''}`}
-                  style={isTopPick ? { border: '2px solid #6366f1' } : {}}
+                  className={`product-card ${isTopPick ? 'ai-top-pick' : ''} ${isOverBudget ? 'ai-over-budget' : ''}`}
+                  style={{
+                    ...(isTopPick ? { border: '2px solid #6366f1' } : {}),
+                    ...(isOverBudget ? { opacity: 0.5 } : {})
+                  }}
                 >
                   {isTopPick && <span style={{ position: 'absolute', top: '-10px', left: '10px', background: '#6366f1', color: '#fff', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 'bold', zIndex: 1 }}>✨ AI Pick</span>}
                   {isAlternative && !isTopPick && <span style={{ position: 'absolute', top: '-10px', left: '10px', background: '#e0e7ff', color: '#4f46e5', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 'bold', zIndex: 1 }}>Alternative</span>}
+                  {isOverBudget && <span style={{ position: 'absolute', top: '-10px', left: '10px', background: '#ef4444', color: '#fff', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 'bold', zIndex: 1 }}>Over Budget</span>}
                   {product.discount > 0 && <span className="discount-badge">{product.discount}% OFF</span>}
                   <h3>{product.name}</h3>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.9em', color: '#666' }}>
@@ -273,7 +282,7 @@ function App() {
                     <span className="rating">⭐ {product.rating}</span>
                   </div>
                   <div className="bottom-row" style={{ marginBottom: '12px' }}>
-                    <span className="price">
+                    <span className="price" style={isOverBudget ? { textDecoration: 'line-through' } : {}}>
                       {product.discount > 0 && <span className="old-price">₹{product.price}</span>}
                       ₹{finalPrice}
                     </span>
