@@ -130,12 +130,12 @@ curl http://localhost:3000/api/audit/<session-id-or-order-id>
 **Requirements:** Docker and Docker Compose.
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/172-21019/razorpay-buildathon.git
 cd razorpay-buildathon
 cp backend/.env.example backend/.env
 ```
 
-Edit `backend/.env` with your own test-mode credentials:
+Edit `backend/.env` with your own api key credentials:
 
 - `GEMINI_API_KEY` — from [Google AI Studio](https://aistudio.google.com/) (free tier)
 - `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` — from the [Razorpay Dashboard](https://dashboard.razorpay.com/), Test Mode
