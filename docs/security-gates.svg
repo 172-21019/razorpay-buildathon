@@ -1,12 +1,63 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="500" viewBox="0 0 1100 500">
-<defs><marker id="x" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#475569"/></marker></defs><rect width="1100" height="500" fill="#fff"/>
+<defs>
+  <marker id="x" markerWidth="10" markerHeight="10" refX="9" refY="3"
+          orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L10,3 L0,6 Z" fill="#475569"/>
+  </marker>
+</defs>
+
+<rect width="1100" height="500" fill="#fff"/>
+
 <g font-family="Arial, sans-serif" text-anchor="middle">
-<text x="550" y="45" font-size="28" font-weight="700">Security &amp; Payment Gates</text>
-<g stroke="#334155" stroke-width="2" fill="#f8fafc">
-<rect x="80" y="100" width="220" height="95" rx="12"/><rect x="440" y="100" width="220" height="95" rx="12"/><rect x="800" y="100" width="220" height="95" rx="12"/>
-<rect x="260" y="300" width="220" height="95" rx="12"/><rect x="620" y="300" width="220" height="95" rx="12"/>
+
+  <text x="550" y="45" font-size="28" font-weight="700">
+    Security &amp; Payment Gates
+  </text>
+
+  <!-- BOXES -->
+  <g stroke="#334155" stroke-width="2" fill="#f8fafc">
+    <rect x="80" y="100" width="220" height="95" rx="12"/>
+    <rect x="440" y="100" width="220" height="95" rx="12"/>
+    <rect x="800" y="100" width="220" height="95" rx="12"/>
+
+    <rect x="260" y="300" width="220" height="95" rx="12"/>
+    <rect x="620" y="300" width="220" height="95" rx="12"/>
+  </g>
+
+  <!-- TITLES -->
+  <g font-size="17" font-weight="700">
+    <text x="190" y="135">1. Secret Isolation</text>
+    <text x="550" y="135">2. Human Confirmation</text>
+    <text x="910" y="135">3. Hosted Checkout</text>
+    <text x="370" y="335">4. Server Verification</text>
+    <text x="730" y="335">5. Paid State</text>
+  </g>
+
+  <!-- DESCRIPTIONS -->
+  <g font-size="13">
+    <text x="190" y="160">Keys stay in backend/.env</text>
+    <text x="550" y="160">AI cannot pay</text>
+    <text x="910" y="160">Razorpay controls payment UI</text>
+    <text x="370" y="360">Backend re-checks Razorpay</text>
+    <text x="730" y="360">Only verified payments mark paid</text>
+  </g>
+
+  <!-- DIRECTED ARROWS -->
+  <g stroke="#475569" stroke-width="2" fill="none" marker-end="url(#x)">
+
+    <!-- 1 → 2 -->
+    <path d="M300 147 L440 147"/>
+
+    <!-- 2 → 3 -->
+    <path d="M660 147 L800 147"/>
+
+    <!-- 3 → 4 -->
+    <path d="M910 195 L480 300"/>
+
+    <!-- 4 → 5 -->
+    <path d="M480 347 L620 347"/>
+
+  </g>
+
 </g>
-<g font-size="17" font-weight="700"><text x="190" y="135">1. Secret Isolation</text><text x="550" y="135">2. Human Confirmation</text><text x="910" y="135">3. Hosted Checkout</text><text x="370" y="335">4. Server Verification</text><text x="730" y="335">5. Paid State</text></g>
-<g font-size="13"><text x="190" y="160">Keys stay in backend/.env</text><text x="550" y="160">AI cannot pay</text><text x="910" y="160">Razorpay controls payment UI</text><text x="370" y="360">Backend re-checks Razorpay</text><text x="730" y="360">Only verified payments mark paid</text></g>
-<path d="M300 147 L440 147 M660 147 L800 147 M910 195 L730 300 M620 347 L480 347" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#x)"/>
-</g></svg>
+</svg>
