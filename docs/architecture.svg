@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="650" viewBox="0 0 1100 650">
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#475569"/></marker></defs>
+<rect width="1100" height="650" fill="#fff"/>
+<g font-family="Arial, sans-serif" text-anchor="middle">
+<text x="550" y="42" font-size="28" font-weight="700">Agentic E-commerce Store — Architecture</text>
+<rect x="410" y="70" width="280" height="70" rx="12" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+<text x="550" y="112" font-size="20" font-weight="700">User</text><text x="550" y="132" font-size="14">Text / Voice</text>
+<rect x="330" y="185" width="440" height="105" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+<text x="550" y="220" font-size="20" font-weight="700">React Frontend (Vite)</text>
+<text x="550" y="247" font-size="14">Catalog · AI Search · Cart · Checkout · Confirmation</text>
+<text x="550" y="270" font-size="14">Web Speech API for voice input</text>
+<rect x="300" y="335" width="500" height="115" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+<text x="550" y="370" font-size="20" font-weight="700">Express Backend</text>
+<text x="550" y="397" font-size="14">Products · Orders · AI · Audit · Cross-sell</text>
+<text x="550" y="420" font-size="14">Deterministic filtering, ranking &amp; payment gates</text>
+<rect x="70" y="510" width="240" height="85" rx="12" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>
+<text x="190" y="545" font-size="18" font-weight="700">Gemini</text><text x="190" y="570" font-size="14">Intent parsing · 1 call/search</text>
+<rect x="430" y="510" width="240" height="85" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+<text x="550" y="545" font-size="18" font-weight="700">Razorpay Test Mode</text><text x="550" y="570" font-size="14">Payment Links · Verification</text>
+<rect x="790" y="510" width="240" height="85" rx="12" fill="#faf5ff" stroke="#9333ea" stroke-width="2"/>
+<text x="910" y="545" font-size="18" font-weight="700">SQLite</text><text x="910" y="570" font-size="14">Products · Orders · Audit log</text>
+<g stroke="#475569" stroke-width="2" marker-end="url(#a)" fill="none">
+<path d="M550 140 L550 185"/><path d="M550 290 L550 335"/>
+<path d="M430 450 L260 510"/><path d="M550 450 L550 510"/><path d="M670 450 L840 510"/>
+</g>
+</g></svg>
