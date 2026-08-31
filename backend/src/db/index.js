@@ -22,12 +22,15 @@ const initializeDb = () => {
     db.run(`CREATE TABLE IF NOT EXISTS products (
       id TEXT PRIMARY KEY,
       name TEXT,
+      brand TEXT,
       category TEXT,
       price INTEGER,
       stock INTEGER,
       rating REAL,
       discount INTEGER DEFAULT 0
     )`);
+    // Safe migration for existing DBs
+    db.run("ALTER TABLE products ADD COLUMN brand TEXT", () => {});
 
     db.run(`CREATE TABLE IF NOT EXISTS orders (
       id TEXT PRIMARY KEY,
@@ -71,10 +74,10 @@ const initializeDb = () => {
       if (row.count === 0) {
         console.log('Seeding products...');
         const seedData = JSON.parse(fs.readFileSync(seedPath, 'utf8'));
-        const stmt = db.prepare('INSERT INTO products (id, name, category, price, stock, rating, discount) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        const stmt = db.prepare('INSERT INTO products (id, name, brand, category, price, stock, rating, discount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
         
         seedData.forEach(p => {
-          stmt.run(p.id, p.name, p.category, p.price, p.stock, p.rating, p.discount || 0);
+          stmt.run(p.id, p.name, p.brand || null, p.category, p.price, p.stock, p.rating, p.discount || 0);
         });
         
         stmt.finalize();

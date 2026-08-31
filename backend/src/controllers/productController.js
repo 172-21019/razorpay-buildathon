@@ -1,23 +1,18 @@
-const { db } = require('../db');
+const { db, logAuditEvent } = require('../db');
 
 exports.getProducts = (req, res) => {
   const { category, search } = req.query;
-  let query = 'SELECT * FROM products';
+  let query = 'SELECT * FROM products WHERE brand IS NOT NULL';
   const params = [];
-  const conditions = [];
 
   if (category) {
-    conditions.push('category = ?');
+    query += ' AND category = ?';
     params.push(category);
   }
 
   if (search) {
-    conditions.push('name LIKE ?');
+    query += ' AND name LIKE ?';
     params.push(`%${search}%`);
-  }
-
-  if (conditions.length > 0) {
-    query += ' WHERE ' + conditions.join(' AND ');
   }
 
   db.all(query, params, (err, rows) => {
@@ -40,5 +35,34 @@ exports.getProductById = (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
     res.json(row);
+  });
+};
+
+exports.getRelatedProducts = (req, res) => {
+  const { id } = req.params;
+  
+  db.get('SELECT category FROM products WHERE id = ?', [id], (err, row) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ error: 'Failed to retrieve product category' });
+    }
+    if (!row) {
+      return res.json([]);
+    }
+    
+    const query = 'SELECT * FROM products WHERE category = ? AND id != ? AND stock > 0 ORDER BY rating DESC LIMIT 2';
+    db.all(query, [row.category, id], (err, relatedRows) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ error: 'Failed to retrieve related products' });
+      }
+      
+      if (relatedRows && relatedRows.length > 0) {
+        const sessionId = req.headers['x-session-id'] || 'anonymous';
+        logAuditEvent(sessionId, 'cross_sell_suggested', { category: row.category, originalProductId: id }, { suggestedProductIds: relatedRows.map(p => p.id) });
+      }
+      
+      res.json(relatedRows || []);
+    });
   });
 };

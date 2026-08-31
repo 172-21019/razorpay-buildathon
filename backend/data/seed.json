@@ -1,17 +1,767 @@
 [
-  { "id": "p1", "name": "Wireless Noise-Cancelling Headphones", "category": "Electronics", "price": 4999, "stock": 50, "rating": 4.5, "discount": 20 },
-  { "id": "p2", "name": "Mechanical Keyboard", "category": "Electronics", "price": 3500, "stock": 100, "rating": 4.8 },
-  { "id": "p3", "name": "Ergonomic Office Chair", "category": "Furniture", "price": 8500, "stock": 20, "rating": 4.2, "discount": 10 },
-  { "id": "p4", "name": "Stainless Steel Water Bottle", "category": "Home", "price": 750, "stock": 200, "rating": 4.6 },
-  { "id": "p5", "name": "Yoga Mat", "category": "Fitness", "price": 1200, "stock": 150, "rating": 4.7 },
-  { "id": "p6", "name": "Bluetooth Speaker", "category": "Electronics", "price": 2500, "stock": 80, "rating": 4.3, "discount": 15 },
-  { "id": "p7", "name": "Adjustable Dumbbell Set", "category": "Fitness", "price": 6000, "stock": 30, "rating": 4.9 },
-  { "id": "p8", "name": "Desk Lamp with Wireless Charger", "category": "Electronics", "price": 1800, "stock": 70, "rating": 4.4 },
-  { "id": "p9", "name": "Cotton Bed Sheets", "category": "Home", "price": 1500, "stock": 120, "rating": 4.5, "discount": 30 },
-  { "id": "p10", "name": "Resistance Bands Set", "category": "Fitness", "price": 800, "stock": 300, "rating": 4.6 },
-  { "id": "p11", "name": "Smartwatch", "category": "Electronics", "price": 5500, "stock": 40, "rating": 4.1 },
-  { "id": "p12", "name": "Coffee Maker", "category": "Home", "price": 3200, "stock": 25, "rating": 4.7, "discount": 25 },
-  { "id": "p13", "name": "Backpack", "category": "Accessories", "price": 1200, "stock": 110, "rating": 4.8 },
-  { "id": "p14", "name": "Running Shoes", "category": "Fitness", "price": 4000, "stock": 60, "rating": 4.5 },
-  { "id": "p15", "name": "Sunglasses", "category": "Accessories", "price": 900, "stock": 180, "rating": 4.2 }
+  {
+    "id": "p1",
+    "name": "Wireless Noise-Cancelling Headphones",
+    "category": "Electronics",
+    "price": 4999,
+    "stock": 50,
+    "rating": 4.5,
+    "discount": 20
+  },
+  {
+    "id": "p2",
+    "name": "Mechanical Keyboard",
+    "category": "Electronics",
+    "price": 3500,
+    "stock": 100,
+    "rating": 4.8
+  },
+  {
+    "id": "p3",
+    "name": "Ergonomic Office Chair",
+    "category": "Furniture",
+    "price": 8500,
+    "stock": 20,
+    "rating": 4.2,
+    "discount": 10
+  },
+  {
+    "id": "p4",
+    "name": "Stainless Steel Water Bottle",
+    "category": "Home",
+    "price": 750,
+    "stock": 200,
+    "rating": 4.6
+  },
+  {
+    "id": "p5",
+    "name": "Yoga Mat",
+    "category": "Fitness",
+    "price": 1200,
+    "stock": 150,
+    "rating": 4.7
+  },
+  {
+    "id": "p6",
+    "name": "Bluetooth Speaker",
+    "category": "Electronics",
+    "price": 2500,
+    "stock": 80,
+    "rating": 4.3,
+    "discount": 15
+  },
+  {
+    "id": "p7",
+    "name": "Adjustable Dumbbell Set",
+    "category": "Fitness",
+    "price": 6000,
+    "stock": 30,
+    "rating": 4.9
+  },
+  {
+    "id": "p8",
+    "name": "Desk Lamp with Wireless Charger",
+    "category": "Electronics",
+    "price": 1800,
+    "stock": 70,
+    "rating": 4.4
+  },
+  {
+    "id": "p9",
+    "name": "Cotton Bed Sheets",
+    "category": "Home",
+    "price": 1500,
+    "stock": 120,
+    "rating": 4.5,
+    "discount": 30
+  },
+  {
+    "id": "p10",
+    "name": "Resistance Bands Set",
+    "category": "Fitness",
+    "price": 800,
+    "stock": 300,
+    "rating": 4.6
+  },
+  {
+    "id": "p11",
+    "name": "Smartwatch",
+    "category": "Electronics",
+    "price": 5500,
+    "stock": 40,
+    "rating": 4.1
+  },
+  {
+    "id": "p12",
+    "name": "Coffee Maker",
+    "category": "Home",
+    "price": 3200,
+    "stock": 25,
+    "rating": 4.7,
+    "discount": 25
+  },
+  {
+    "id": "p13",
+    "name": "Backpack",
+    "category": "Accessories",
+    "price": 1200,
+    "stock": 110,
+    "rating": 4.8
+  },
+  {
+    "id": "p14",
+    "name": "Running Shoes",
+    "category": "Fitness",
+    "price": 4000,
+    "stock": 60,
+    "rating": 4.5
+  },
+  {
+    "id": "p15",
+    "name": "Sunglasses",
+    "category": "Accessories",
+    "price": 900,
+    "stock": 180,
+    "rating": 4.2
+  },
+  {
+    "id": "p100",
+    "name": "JBL Wireless Noise-Cancelling Headphones",
+    "brand": "JBL",
+    "category": "Electronics",
+    "price": 4599,
+    "stock": 55,
+    "rating": 4.2,
+    "discount": 0
+  },
+  {
+    "id": "p101",
+    "name": "Sony Wireless Noise-Cancelling Headphones",
+    "brand": "Sony",
+    "category": "Electronics",
+    "price": 6199,
+    "stock": 32,
+    "rating": 4.7,
+    "discount": 15
+  },
+  {
+    "id": "p102",
+    "name": "boAt Wireless Noise-Cancelling Headphones",
+    "brand": "boAt",
+    "category": "Electronics",
+    "price": 5899,
+    "stock": 43,
+    "rating": 4.2,
+    "discount": 20
+  },
+  {
+    "id": "p103",
+    "name": "Noise Wireless Noise-Cancelling Headphones",
+    "brand": "Noise",
+    "category": "Electronics",
+    "price": 4499,
+    "stock": 52,
+    "rating": 4.1,
+    "discount": 20
+  },
+  {
+    "id": "p104",
+    "name": "Sennheiser Wireless Noise-Cancelling Headphones",
+    "brand": "Sennheiser",
+    "category": "Electronics",
+    "price": 5899,
+    "stock": 11,
+    "rating": 4,
+    "discount": 15
+  },
+  {
+    "id": "p105",
+    "name": "Logitech Mechanical Keyboard",
+    "brand": "Logitech",
+    "category": "Electronics",
+    "price": 4399,
+    "stock": 21,
+    "rating": 4.2,
+    "discount": 5
+  },
+  {
+    "id": "p106",
+    "name": "Razer Mechanical Keyboard",
+    "brand": "Razer",
+    "category": "Electronics",
+    "price": 4899,
+    "stock": 59,
+    "rating": 4.5,
+    "discount": 20
+  },
+  {
+    "id": "p107",
+    "name": "Corsair Mechanical Keyboard",
+    "brand": "Corsair",
+    "category": "Electronics",
+    "price": 3099,
+    "stock": 37,
+    "rating": 4.7,
+    "discount": 15
+  },
+  {
+    "id": "p108",
+    "name": "Keychron Mechanical Keyboard",
+    "brand": "Keychron",
+    "category": "Electronics",
+    "price": 3399,
+    "stock": 26,
+    "rating": 4.4,
+    "discount": 15
+  },
+  {
+    "id": "p109",
+    "name": "Herman Miller Ergonomic Office Chair",
+    "brand": "Herman Miller",
+    "category": "Furniture",
+    "price": 10999,
+    "stock": 55,
+    "rating": 4.5,
+    "discount": 0
+  },
+  {
+    "id": "p110",
+    "name": "Steelcase Ergonomic Office Chair",
+    "brand": "Steelcase",
+    "category": "Furniture",
+    "price": 9499,
+    "stock": 51,
+    "rating": 4.7,
+    "discount": 15
+  },
+  {
+    "id": "p111",
+    "name": "IKEA Ergonomic Office Chair",
+    "brand": "IKEA",
+    "category": "Furniture",
+    "price": 8599,
+    "stock": 54,
+    "rating": 4.7,
+    "discount": 0
+  },
+  {
+    "id": "p112",
+    "name": "SIHOO Ergonomic Office Chair",
+    "brand": "SIHOO",
+    "category": "Furniture",
+    "price": 7099,
+    "stock": 42,
+    "rating": 4.6,
+    "discount": 10
+  },
+  {
+    "id": "p113",
+    "name": "Milton Stainless Steel Water Bottle",
+    "brand": "Milton",
+    "category": "Home",
+    "price": 999,
+    "stock": 41,
+    "rating": 4.8,
+    "discount": 20
+  },
+  {
+    "id": "p114",
+    "name": "Cello Stainless Steel Water Bottle",
+    "brand": "Cello",
+    "category": "Home",
+    "price": 999,
+    "stock": 54,
+    "rating": 4,
+    "discount": 20
+  },
+  {
+    "id": "p115",
+    "name": "Yeti Stainless Steel Water Bottle",
+    "brand": "Yeti",
+    "category": "Home",
+    "price": 799,
+    "stock": 46,
+    "rating": 4.6,
+    "discount": 10
+  },
+  {
+    "id": "p116",
+    "name": "Hydro Flask Stainless Steel Water Bottle",
+    "brand": "Hydro Flask",
+    "category": "Home",
+    "price": 1099,
+    "stock": 17,
+    "rating": 4.6,
+    "discount": 5
+  },
+  {
+    "id": "p117",
+    "name": "Liforme Yoga Mat",
+    "brand": "Liforme",
+    "category": "Fitness",
+    "price": 1299,
+    "stock": 22,
+    "rating": 4.6,
+    "discount": 20
+  },
+  {
+    "id": "p118",
+    "name": "Manduka Yoga Mat",
+    "brand": "Manduka",
+    "category": "Fitness",
+    "price": 1499,
+    "stock": 30,
+    "rating": 4.7,
+    "discount": 10
+  },
+  {
+    "id": "p119",
+    "name": "Gaiam Yoga Mat",
+    "brand": "Gaiam",
+    "category": "Fitness",
+    "price": 1699,
+    "stock": 55,
+    "rating": 4.7,
+    "discount": 10
+  },
+  {
+    "id": "p120",
+    "name": "Decathlon Yoga Mat",
+    "brand": "Decathlon",
+    "category": "Fitness",
+    "price": 1699,
+    "stock": 40,
+    "rating": 4.5,
+    "discount": 10
+  },
+  {
+    "id": "p121",
+    "name": "JBL Bluetooth Speaker",
+    "brand": "JBL",
+    "category": "Electronics",
+    "price": 3499,
+    "stock": 46,
+    "rating": 4.2,
+    "discount": 20
+  },
+  {
+    "id": "p122",
+    "name": "Sony Bluetooth Speaker",
+    "brand": "Sony",
+    "category": "Electronics",
+    "price": 2999,
+    "stock": 43,
+    "rating": 4.1,
+    "discount": 10
+  },
+  {
+    "id": "p123",
+    "name": "Bose Bluetooth Speaker",
+    "brand": "Bose",
+    "category": "Electronics",
+    "price": 2199,
+    "stock": 48,
+    "rating": 4.1,
+    "discount": 5
+  },
+  {
+    "id": "p124",
+    "name": "Marshall Bluetooth Speaker",
+    "brand": "Marshall",
+    "category": "Electronics",
+    "price": 2599,
+    "stock": 55,
+    "rating": 4.4,
+    "discount": 5
+  },
+  {
+    "id": "p125",
+    "name": "Bowflex Adjustable Dumbbell Set",
+    "brand": "Bowflex",
+    "category": "Fitness",
+    "price": 6999,
+    "stock": 37,
+    "rating": 4.8,
+    "discount": 20
+  },
+  {
+    "id": "p126",
+    "name": "Core Fitness Adjustable Dumbbell Set",
+    "brand": "Core Fitness",
+    "category": "Fitness",
+    "price": 7299,
+    "stock": 48,
+    "rating": 4.2,
+    "discount": 20
+  },
+  {
+    "id": "p127",
+    "name": "PowerBlock Adjustable Dumbbell Set",
+    "brand": "PowerBlock",
+    "category": "Fitness",
+    "price": 5399,
+    "stock": 41,
+    "rating": 4.1,
+    "discount": 5
+  },
+  {
+    "id": "p128",
+    "name": "Decathlon Adjustable Dumbbell Set",
+    "brand": "Decathlon",
+    "category": "Fitness",
+    "price": 5899,
+    "stock": 51,
+    "rating": 4.2,
+    "discount": 0
+  },
+  {
+    "id": "p129",
+    "name": "Philips Desk Lamp with Wireless Charger",
+    "brand": "Philips",
+    "category": "Electronics",
+    "price": 2299,
+    "stock": 40,
+    "rating": 4.5,
+    "discount": 15
+  },
+  {
+    "id": "p130",
+    "name": "Xiaomi Desk Lamp with Wireless Charger",
+    "brand": "Xiaomi",
+    "category": "Electronics",
+    "price": 2199,
+    "stock": 43,
+    "rating": 4.5,
+    "discount": 10
+  },
+  {
+    "id": "p131",
+    "name": "Wipro Desk Lamp with Wireless Charger",
+    "brand": "Wipro",
+    "category": "Electronics",
+    "price": 2199,
+    "stock": 46,
+    "rating": 4.4,
+    "discount": 15
+  },
+  {
+    "id": "p132",
+    "name": "Syska Desk Lamp with Wireless Charger",
+    "brand": "Syska",
+    "category": "Electronics",
+    "price": 1699,
+    "stock": 42,
+    "rating": 4.7,
+    "discount": 10
+  },
+  {
+    "id": "p133",
+    "name": "Bombay Dyeing Cotton Bed Sheets",
+    "brand": "Bombay Dyeing",
+    "category": "Home",
+    "price": 1899,
+    "stock": 33,
+    "rating": 4.1,
+    "discount": 20
+  },
+  {
+    "id": "p134",
+    "name": "Spaces Cotton Bed Sheets",
+    "brand": "Spaces",
+    "category": "Home",
+    "price": 1899,
+    "stock": 19,
+    "rating": 4.7,
+    "discount": 20
+  },
+  {
+    "id": "p135",
+    "name": "Portico Cotton Bed Sheets",
+    "brand": "Portico",
+    "category": "Home",
+    "price": 1399,
+    "stock": 39,
+    "rating": 4.8,
+    "discount": 10
+  },
+  {
+    "id": "p136",
+    "name": "DDecor Cotton Bed Sheets",
+    "brand": "DDecor",
+    "category": "Home",
+    "price": 1599,
+    "stock": 46,
+    "rating": 4.7,
+    "discount": 15
+  },
+  {
+    "id": "p137",
+    "name": "Theraband Resistance Bands Set",
+    "brand": "Theraband",
+    "category": "Fitness",
+    "price": 999,
+    "stock": 33,
+    "rating": 4.3,
+    "discount": 15
+  },
+  {
+    "id": "p138",
+    "name": "Decathlon Resistance Bands Set",
+    "brand": "Decathlon",
+    "category": "Fitness",
+    "price": 799,
+    "stock": 15,
+    "rating": 4.5,
+    "discount": 15
+  },
+  {
+    "id": "p139",
+    "name": "Boldfit Resistance Bands Set",
+    "brand": "Boldfit",
+    "category": "Fitness",
+    "price": 1099,
+    "stock": 10,
+    "rating": 4.7,
+    "discount": 15
+  },
+  {
+    "id": "p140",
+    "name": "Nivia Resistance Bands Set",
+    "brand": "Nivia",
+    "category": "Fitness",
+    "price": 899,
+    "stock": 46,
+    "rating": 4.4,
+    "discount": 15
+  },
+  {
+    "id": "p141",
+    "name": "Apple Smartwatch",
+    "brand": "Apple",
+    "category": "Electronics",
+    "price": 4799,
+    "stock": 19,
+    "rating": 4.7,
+    "discount": 10
+  },
+  {
+    "id": "p142",
+    "name": "Samsung Smartwatch",
+    "brand": "Samsung",
+    "category": "Electronics",
+    "price": 5399,
+    "stock": 59,
+    "rating": 4.5,
+    "discount": 0
+  },
+  {
+    "id": "p143",
+    "name": "Noise Smartwatch",
+    "brand": "Noise",
+    "category": "Electronics",
+    "price": 4899,
+    "stock": 36,
+    "rating": 4.8,
+    "discount": 20
+  },
+  {
+    "id": "p144",
+    "name": "Amazfit Smartwatch",
+    "brand": "Amazfit",
+    "category": "Electronics",
+    "price": 4699,
+    "stock": 37,
+    "rating": 4.1,
+    "discount": 10
+  },
+  {
+    "id": "p145",
+    "name": "Garmin Smartwatch",
+    "brand": "Garmin",
+    "category": "Electronics",
+    "price": 5999,
+    "stock": 32,
+    "rating": 4.2,
+    "discount": 10
+  },
+  {
+    "id": "p146",
+    "name": "Nespresso Coffee Maker",
+    "brand": "Nespresso",
+    "category": "Home",
+    "price": 3899,
+    "stock": 19,
+    "rating": 4.2,
+    "discount": 15
+  },
+  {
+    "id": "p147",
+    "name": "Philips Coffee Maker",
+    "brand": "Philips",
+    "category": "Home",
+    "price": 4199,
+    "stock": 49,
+    "rating": 4.1,
+    "discount": 10
+  },
+  {
+    "id": "p148",
+    "name": "Morphy Richards Coffee Maker",
+    "brand": "Morphy Richards",
+    "category": "Home",
+    "price": 3099,
+    "stock": 41,
+    "rating": 4.3,
+    "discount": 20
+  },
+  {
+    "id": "p149",
+    "name": "DeLonghi Coffee Maker",
+    "brand": "DeLonghi",
+    "category": "Home",
+    "price": 2699,
+    "stock": 56,
+    "rating": 4,
+    "discount": 10
+  },
+  {
+    "id": "p150",
+    "name": "Wildcraft Backpack",
+    "brand": "Wildcraft",
+    "category": "Accessories",
+    "price": 1199,
+    "stock": 22,
+    "rating": 4.4,
+    "discount": 20
+  },
+  {
+    "id": "p151",
+    "name": "American Tourister Backpack",
+    "brand": "American Tourister",
+    "category": "Accessories",
+    "price": 1399,
+    "stock": 13,
+    "rating": 4.7,
+    "discount": 15
+  },
+  {
+    "id": "p152",
+    "name": "Skybags Backpack",
+    "brand": "Skybags",
+    "category": "Accessories",
+    "price": 1599,
+    "stock": 40,
+    "rating": 4.3,
+    "discount": 5
+  },
+  {
+    "id": "p153",
+    "name": "Safari Backpack",
+    "brand": "Safari",
+    "category": "Accessories",
+    "price": 1599,
+    "stock": 28,
+    "rating": 4.7,
+    "discount": 0
+  },
+  {
+    "id": "p154",
+    "name": "Nike Running Shoes",
+    "brand": "Nike",
+    "category": "Fitness",
+    "price": 4699,
+    "stock": 22,
+    "rating": 4,
+    "discount": 10
+  },
+  {
+    "id": "p155",
+    "name": "Adidas Running Shoes",
+    "brand": "Adidas",
+    "category": "Fitness",
+    "price": 4199,
+    "stock": 20,
+    "rating": 4.8,
+    "discount": 0
+  },
+  {
+    "id": "p156",
+    "name": "Puma Running Shoes",
+    "brand": "Puma",
+    "category": "Fitness",
+    "price": 3499,
+    "stock": 44,
+    "rating": 4,
+    "discount": 10
+  },
+  {
+    "id": "p157",
+    "name": "Reebok Running Shoes",
+    "brand": "Reebok",
+    "category": "Fitness",
+    "price": 4499,
+    "stock": 16,
+    "rating": 4.7,
+    "discount": 10
+  },
+  {
+    "id": "p158",
+    "name": "Asics Running Shoes",
+    "brand": "Asics",
+    "category": "Fitness",
+    "price": 3699,
+    "stock": 41,
+    "rating": 4.8,
+    "discount": 5
+  },
+  {
+    "id": "p159",
+    "name": "Ray-Ban Sunglasses",
+    "brand": "Ray-Ban",
+    "category": "Accessories",
+    "price": 799,
+    "stock": 29,
+    "rating": 4.6,
+    "discount": 15
+  },
+  {
+    "id": "p160",
+    "name": "Fastrack Sunglasses",
+    "brand": "Fastrack",
+    "category": "Accessories",
+    "price": 799,
+    "stock": 22,
+    "rating": 4.6,
+    "discount": 15
+  },
+  {
+    "id": "p161",
+    "name": "Oakley Sunglasses",
+    "brand": "Oakley",
+    "category": "Accessories",
+    "price": 1099,
+    "stock": 20,
+    "rating": 4.6,
+    "discount": 20
+  },
+  {
+    "id": "p162",
+    "name": "Lenskart Sunglasses",
+    "brand": "Lenskart",
+    "category": "Accessories",
+    "price": 799,
+    "stock": 29,
+    "rating": 4.3,
+    "discount": 0
+  },
+  {
+    "id": "p163",
+    "name": "Polaroid Sunglasses",
+    "brand": "Polaroid",
+    "category": "Accessories",
+    "price": 1199,
+    "stock": 25,
+    "rating": 4.2,
+    "discount": 20
+  }
 ]

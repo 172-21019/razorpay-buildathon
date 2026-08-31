@@ -76,7 +76,6 @@ const AIAgentButton = ({ onSearchResult, onClear }) => {
       setInputValue(originalTextRef.current);
     }
     setExpanded(false);
-    if (onClear) onClear();
   };
 
   const toggleListening = () => {

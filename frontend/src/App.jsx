@@ -18,10 +18,15 @@ function App() {
   // Search State
   const [searchTerm, setSearchTerm] = useState('');
   const [aiSearchResult, setAiSearchResult] = useState(null);
+  const [crossSellSuggestions, setCrossSellSuggestions] = useState(null);
 
   // Payment UI State
   const [paymentLinkData, setPaymentLinkData] = useState(null);
   const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    setAiSearchResult(null);
+  }, [currentView]);
 
   useEffect(() => {
     if (currentView === 'payment_verification' && paymentLinkData) {
@@ -93,7 +98,7 @@ function App() {
   }, [products, searchTerm, aiSearchResult]);
 
   // ----- ACTIONS -----
-  const addToCart = (product, quantity) => {
+  const addToCart = async (product, quantity) => {
     setCart(prev => {
       const existing = prev.find(item => item.product.id === product.id);
       if (existing) {
@@ -105,7 +110,20 @@ function App() {
       }
       return [...prev, { product, quantity }];
     });
+    
     alert('Added to cart!');
+    
+    try {
+      const res = await fetch(`${API_BASE}/products/${product.id}/related`);
+      if (res.ok) {
+        const related = await res.json();
+        if (related && related.length > 0) {
+          setCrossSellSuggestions(related);
+        }
+      }
+    } catch(err) {
+      console.error('Failed to fetch cross-sell suggestions', err);
+    }
   };
 
   const removeFromCart = (productId) => {
@@ -228,13 +246,29 @@ function App() {
     <div className="container">
       <header>
         <div className="header-top">
-          <div>
-            <h1>Mock E-commerce Store</h1>
-            <p>Phase 1.5 Prototype</p>
+          <div 
+            className="logo-container" 
+            onClick={() => {
+              setCurrentView('catalog');
+              setAiSearchResult(null);
+              setSearchTerm('');
+            }}
+            style={{ cursor: 'pointer', transition: 'opacity 0.2s' }}
+            onMouseOver={(e) => e.currentTarget.style.opacity = 0.8}
+            onMouseOut={(e) => e.currentTarget.style.opacity = 1}
+            title="Return to Catalog"
+          >
+            <h1>Agentic E-commerce Store</h1>
+            <p>V3.1</p>
           </div>
-          <button className="cart-btn" onClick={() => setCurrentView('cart')}>
-            🛒 Cart ({cart.reduce((acc, item) => acc + item.quantity, 0)})
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap' }}>
+            {currentView === 'catalog' && (
+              <AIAgentButton onSearchResult={setAiSearchResult} onClear={() => setAiSearchResult(null)} />
+            )}
+            <button className="cart-btn" onClick={() => setCurrentView('cart')}>
+              🛒 Cart ({cart.reduce((acc, item) => acc + item.quantity, 0)})
+            </button>
+          </div>
         </div>
       </header>
 
@@ -245,7 +279,10 @@ function App() {
               type="text" 
               placeholder="Search products by name..." 
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                if (aiSearchResult) setAiSearchResult(null);
+              }}
             />
           </div>
           <div className="product-grid">
@@ -319,7 +356,6 @@ function App() {
               );
             }))}
           </div>
-          <AIAgentButton onSearchResult={setAiSearchResult} onClear={() => setAiSearchResult(null)} />
         </div>
       )}
 
@@ -393,7 +429,6 @@ function App() {
               </div>
             </>
           )}
-          <AIAgentButton onSearchResult={setAiSearchResult} onClear={() => setAiSearchResult(null)} />
         </div>
       )}
 
@@ -535,6 +570,34 @@ function App() {
             </div>
           </div>
           <button onClick={() => setCurrentView('catalog')} className="primary-btn mt-2">Return to Home</button>
+        </div>
+      )}
+
+      {crossSellSuggestions && crossSellSuggestions.length > 0 && (
+        <div className="cross-sell-strip">
+          <div className="cross-sell-header">
+            <h4>Complete your setup</h4>
+            <button className="close-btn" onClick={() => setCrossSellSuggestions(null)}>×</button>
+          </div>
+          <div className="cross-sell-items">
+            {crossSellSuggestions.map(p => (
+              <div key={p.id} className="cross-sell-card">
+                <div className="cross-sell-info">
+                  <span className="cross-sell-name">{p.name}</span>
+                  <span className="cross-sell-price">₹{p.price}</span>
+                </div>
+                <button 
+                  className="primary-btn cross-sell-add-btn" 
+                  onClick={() => {
+                    setCrossSellSuggestions(null);
+                    addToCart(p, 1);
+                  }}
+                >
+                  Add
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

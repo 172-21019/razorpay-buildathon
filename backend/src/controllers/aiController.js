@@ -53,7 +53,13 @@ exports.processSearch = async (req, res) => {
       });
     }
 
-    db.all('SELECT * FROM products WHERE name LIKE ? AND stock > 0', [`%${String(productName).trim()}%`], (err, rows) => {
+    let searchStr = String(productName).trim();
+    const terms = searchStr.split(/\s+/);
+    let whereClause = terms.map(() => '(name LIKE ? OR brand LIKE ?)').join(' AND ');
+    let params = [];
+    terms.forEach(t => { params.push(`%${t}%`, `%${t}%`); });
+
+    db.all(`SELECT * FROM products WHERE brand IS NOT NULL AND (${whereClause}) AND stock > 0`, params, (err, rows) => {
       logAuditEvent(sessionId, 'catalog_searched', { productName }, rows ? rows.length : 0);
       
       if (err) {
