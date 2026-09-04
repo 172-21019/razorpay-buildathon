@@ -160,8 +160,6 @@ Being transparent about what this prototype intentionally does not solve, given 
 
 - **No real authentication.** A single hardcoded demo user is used throughout — there are no accounts or login. As a direct consequence, `GET /api/orders/:id` has no ownership check; anyone with a specific order ID could view that order's details. Acceptable for a single-user demo; would require real auth in production.
 - **No frontend state persistence.** This is a client-side React SPA with in-memory state — refreshing the browser mid-checkout clears the cart.
-- **Agent is search/rank only.** It does not (yet) add items to cart, adjust quantities, or fill in checkout details autonomously — every cart and checkout action is a deliberate human click, by design, to keep the "gated" requirement unambiguous.
-- **Cross-sell is deterministic, not AI-driven.** Suggestions are same-category, in-stock, highest-rated matches — a simple SQL lookup, intentionally not a second Gemini call, to keep the agent's API usage predictable and free-tier-friendly.
 
 ## What's next, given more time
 
