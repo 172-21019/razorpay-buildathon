@@ -27,25 +27,7 @@ The track's bar is explicit: *"Every money action explainable, bounded and gated
 | **Audit trail** | Every AI reasoning step and every payment lifecycle event is persisted to a structured `agent_audit_log` table, queryable via API. |
 | **Graceful failure** | Over-budget requests, no-match searches, and unclear/off-topic input are all handled with clear messaging — never a crash or a blank screen. |
 
-## Demo flow
 
-```
-User: "find headphones under 5000" (typed or spoken)
-  → Agent parses intent (1 Gemini API call)
-  → Backend searches catalog, filters by budget, ranks by rating
-  → Grid narrows to show matches: best option highlighted as "AI Pick",
-    others as alternatives, any over-budget option shown dimmed and
-    struck through — never hidden
-  → User adds the pick to cart
-  → A lightweight cross-sell suggestion appears: 1-2 related, in-stock
-    products from the same category ("Complete your setup") — a manual
-    click away, never auto-added
-  → User checks out (address form, price breakdown)
-  → Backend creates a real Razorpay Test Mode Payment Link
-  → User completes payment on Razorpay's own hosted page
-  → Backend independently verifies payment status with Razorpay
-  → Order confirmed only once Razorpay confirms — never before
-```
 
 ---
 
@@ -178,8 +160,6 @@ Being transparent about what this prototype intentionally does not solve, given 
 
 - **No real authentication.** A single hardcoded demo user is used throughout — there are no accounts or login. As a direct consequence, `GET /api/orders/:id` has no ownership check; anyone with a specific order ID could view that order's details. Acceptable for a single-user demo; would require real auth in production.
 - **No frontend state persistence.** This is a client-side React SPA with in-memory state — refreshing the browser mid-checkout clears the cart.
-- **Agent is search/rank only.** It does not (yet) add items to cart, adjust quantities, or fill in checkout details autonomously — every cart and checkout action is a deliberate human click, by design, to keep the "gated" requirement unambiguous.
-- **Cross-sell is deterministic, not AI-driven.** Suggestions are same-category, in-stock, highest-rated matches — a simple SQL lookup, intentionally not a second Gemini call, to keep the agent's API usage predictable and free-tier-friendly.
 
 ## What's next, given more time
 
@@ -196,3 +176,5 @@ Being transparent about what this prototype intentionally does not solve, given 
 **Frontend:** React (Vite), Web Speech API for voice input
 **Testing:** Jest, Supertest
 **Infra:** Docker, Docker Compose
+
+## Important note clone the main branch to run the latest version of the project. Remaining branches are the saved versions as a backup. 

@@ -1,17 +1,172 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="380" viewBox="0 0 1100 380">
-<defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#475569"/></marker></defs>
-<rect width="1100" height="380" fill="#fff"/>
-<g font-family="Arial, sans-serif" text-anchor="middle">
-<text x="550" y="42" font-size="28" font-weight="700">Auditable AI &amp; Payment Lifecycle</text>
-<g font-size="15" font-weight="700">
-<rect x="45" y="115" width="190" height="75" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/><text x="140" y="145">intent_parsed</text><text x="140" y="168">AI output logged</text>
-<rect x="270" y="115" width="190" height="75" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/><text x="365" y="145">catalog_searched</text><text x="365" y="168">real DB results</text>
-<rect x="495" y="115" width="190" height="75" rx="10" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/><text x="590" y="145">budget_filtered</text><text x="590" y="168">backend enforced</text>
-<rect x="720" y="115" width="190" height="75" rx="10" fill="#faf5ff" stroke="#9333ea" stroke-width="2"/><text x="815" y="145">products_ranked</text><text x="815" y="168">Top Pick selected</text>
-<rect x="945" y="115" width="110" height="75" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/><text x="1000" y="145">audit_log</text><text x="1000" y="168">persisted</text>
-</g>
-<g stroke="#475569" stroke-width="2" fill="none" marker-end="url(#a)"><path d="M235 152 L270 152"/><path d="M460 152 L495 152"/><path d="M685 152 L720 152"/><path d="M910 152 L945 152"/></g>
-<text x="550" y="275" font-size="18" font-weight="700">Payment lifecycle</text>
-<text x="550" y="310" font-size="15">order_created → payment_link_created → payment_verification_checked → payment_confirmed</text>
-<text x="550" y="342" font-size="14">Every event is stored under the session ID or order ID.</text>
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 640" width="1100" height="640">
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0f172a" />
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563eb" />
+    </marker>
+    <!-- Pending Stamp Filter -->
+    <filter id="stamp-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#dc2626" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <rect width="1100" height="640" fill="#ffffff"/>
+
+  <g font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" text-anchor="middle">
+    
+    <!-- Main Title -->
+    <text x="550" y="44" font-size="28" font-weight="800" fill="#0f172a">Auditable AI &amp; Payment Lifecycle</text>
+
+    <!-- SECTION 1: AI AUDIT TRAIL -->
+    <text x="550" y="105" font-size="20" font-weight="700" fill="#0f172a">agent_audit_log</text>
+
+    <g font-size="14">
+      <!-- Step 1 -->
+      <rect x="45" y="125" width="185" height="72" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="137" y="154" font-weight="700" fill="#0f172a">intent_parsed</text>
+      <text x="137" y="177" font-weight="500" fill="#334155">AI output logged</text>
+
+      <!-- Step 2 -->
+      <rect x="265" y="125" width="185" height="72" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="357" y="154" font-weight="700" fill="#0f172a">catalog_searched</text>
+      <text x="357" y="177" font-weight="500" fill="#334155">real DB results</text>
+
+      <!-- Step 3 -->
+      <rect x="485" y="125" width="185" height="72" rx="10" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>
+      <text x="577" y="154" font-weight="700" fill="#0f172a">budget_filtered</text>
+      <text x="577" y="177" font-weight="500" fill="#334155">backend enforced</text>
+
+      <!-- Step 4 -->
+      <rect x="705" y="125" width="185" height="72" rx="10" fill="#faf5ff" stroke="#9333ea" stroke-width="2"/>
+      <text x="797" y="154" font-weight="700" fill="#0f172a">products_ranked</text>
+      <text x="797" y="177" font-weight="500" fill="#334155">Top Pick selected</text>
+
+      <!-- Step 5 -->
+      <rect x="925" y="125" width="130" height="72" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+      <text x="990" y="154" font-weight="700" fill="#0f172a">audit_log</text>
+      <text x="990" y="177" font-weight="500" fill="#334155">persisted</text>
+    </g>
+
+    <!-- Connectors for Section 1 -->
+    <g stroke="#0f172a" stroke-width="2" fill="none" marker-end="url(#arrow)">
+      <path d="M230 161 L262 161"/>
+      <path d="M450 161 L482 161"/>
+      <path d="M670 161 L702 161"/>
+      <path d="M890 161 L922 161"/>
+    </g>
+
+    <!-- SECTION 2: PAYMENT LIFECYCLE -->
+    <text x="550" y="270" font-size="22" font-weight="800" fill="#0f172a">Payment lifecycle</text>
+
+    <!-- Payment Gated Gatekeeper Box -->
+    <g>
+      <rect x="45" y="280" width="185" height="64" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="137" y="306" font-size="14" font-weight="700" fill="#0f172a">payment_gated</text>
+      <text x="137" y="328" font-size="12" font-weight="500" fill="#334155">explicit human confirmation</text>
+    </g>
+
+    <!-- Card 1: order_created -->
+    <g transform="translate(140, 360)">
+      <rect x="0" y="0" width="165" height="95" rx="8" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
+      <line x1="0" y1="36" x2="165" y2="36" stroke="#0f172a" stroke-width="1.5"/>
+      <text x="82" y="24" font-size="14" font-weight="700" fill="#0f172a">order_created</text>
+      
+      <!-- Cart Icon -->
+      <g transform="translate(26, 47)" stroke="#0f172a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="6" cy="27" r="2.5" fill="#0f172a"/>
+        <circle cx="20" cy="27" r="2.5" fill="#0f172a"/>
+        <path d="M1 2 h5 l4.5 17 h13 l3.5 -12 h-19"/>
+      </g>
+
+      <!-- PENDING Stamp -->
+      <g transform="translate(85, 47)">
+        <rect x="0" y="3" width="60" height="23" rx="4" fill="none" stroke="#dc2626" stroke-width="1.8" stroke-dasharray="3,1" transform="rotate(-6 30 14)"/>
+        <text x="30" y="18" font-size="10" font-weight="800" fill="#dc2626" letter-spacing="0.8" transform="rotate(-6 30 14)">PENDING</text>
+      </g>
+    </g>
+
+    <!-- Card 2: payment_link_created -->
+    <g transform="translate(340, 360)">
+      <rect x="0" y="0" width="205" height="95" rx="8" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
+      <line x1="0" y1="36" x2="205" y2="36" stroke="#0f172a" stroke-width="1.5"/>
+      <text x="102" y="24" font-size="14" font-weight="700" fill="#0f172a">payment_link_created</text>
+      
+      <!-- Chain Link Icon -->
+      <g transform="translate(24, 53)" stroke="#0f172a" stroke-width="2.2" fill="none" stroke-linecap="round">
+        <path d="M7 13 L4 16 A4.5 4.5 0 0 1 4 9 L7 6 A4.5 4.5 0 0 1 14 6"/>
+        <path d="M13 7 L16 4 A4.5 4.5 0 0 1 16 11 L13 14 A4.5 4.5 0 0 1 6 14"/>
+      </g>
+      <text x="114" y="68" font-size="13" font-weight="600" fill="#334155">Razorpay API call</text>
+    </g>
+
+    <!-- Card 3: payment_verification_checked -->
+    <g transform="translate(580, 360)">
+      <rect x="0" y="0" width="270" height="95" rx="8" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
+      <line x1="0" y1="36" x2="270" y2="36" stroke="#0f172a" stroke-width="1.5"/>
+      <text x="135" y="24" font-size="14" font-weight="700" fill="#0f172a">payment_verification_checked</text>
+      
+      <!-- Sync/Retry/Network icon -->
+      <g transform="translate(18, 51)" stroke="#0f172a" stroke-width="2" fill="none">
+        <circle cx="12" cy="14" r="9"/>
+        <path d="M8 14 a4 4 0 0 1 7 -2"/>
+        <path d="M15 10 v3 h-3"/>
+      </g>
+      <text x="138" y="58" font-size="12" font-weight="600" fill="#334155">backend-initiated</text>
+      <text x="138" y="74" font-size="12" font-weight="600" fill="#334155">status verification</text>
+      
+      <!-- Waves Icon -->
+      <g transform="translate(230, 52)" stroke="#0f172a" stroke-width="2" fill="none" stroke-linecap="round">
+        <circle cx="10" cy="14" r="2.5" fill="#0f172a"/>
+        <path d="M6 9 A7 7 0 0 0 6 19"/>
+        <path d="M14 9 A7 7 0 0 1 14 19"/>
+        <path d="M3 6 A12 12 0 0 0 3 22"/>
+        <path d="M17 6 A12 12 0 0 1 17 22"/>
+      </g>
+    </g>
+
+    <!-- Card 4: payment_confirmed -->
+    <g transform="translate(885, 360)">
+      <rect x="0" y="0" width="185" height="95" rx="8" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
+      <line x1="0" y1="36" x2="185" y2="36" stroke="#0f172a" stroke-width="1.5"/>
+      <text x="92" y="24" font-size="14" font-weight="700" fill="#0f172a">payment_confirmed</text>
+      
+      <!-- Checkmark Icon -->
+      <circle cx="32" cy="65" r="10" fill="#16a34a"/>
+      <path d="M28 65 L31 68 L36 62" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="105" y="69" font-size="13" font-weight="600" fill="#16a34a">order marked paid</text>
+    </g>
+
+    <!-- Card 5 (Bottom Sub-branch): stock_deducted -->
+    <g transform="translate(485, 495)">
+      <rect x="0" y="0" width="195" height="62" rx="8" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
+      <text x="97" y="26" font-size="14" font-weight="700" fill="#0f172a">stock_deducted</text>
+      <text x="97" y="47" font-size="12" font-weight="500" fill="#475569">on order confirmation</text>
+    </g>
+
+    <!-- Flow Arrows in Payment Lifecycle -->
+    <g stroke="#0f172a" stroke-width="2" fill="none" marker-end="url(#arrow)">
+      <!-- Main sequence -->
+      <path d="M305 407 L337 407"/>
+      <path d="M545 407 L577 407"/>
+      <path d="M850 407 L882 407"/>
+
+      <!-- payment_gated -> order_created -->
+      <path d="M105 344 C 105 375, 120 380, 137 380"/>
+
+      <!-- order_created top arc to payment_confirmed -->
+      <path d="M230 360 C 230 310, 880 310, 960 357"/>
+
+      <!-- Branch down to stock_deducted -->
+      <path d="M210 455 C 210 526, 420 526, 482 526"/>
+
+      <!-- Branch from stock_deducted up to payment_confirmed -->
+      <path d="M680 526 C 760 526, 920 520, 975 460"/>
+    </g>
+
+    <!-- Bottom Footer Note -->
+    <text x="550" y="605" font-size="14" font-weight="500" fill="#334155">Every event is stored under the session ID or order ID.</text>
+  </g>
+</svg>
