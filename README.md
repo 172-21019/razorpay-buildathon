@@ -196,3 +196,5 @@ Being transparent about what this prototype intentionally does not solve, given 
 **Frontend:** React (Vite), Web Speech API for voice input
 **Testing:** Jest, Supertest
 **Infra:** Docker, Docker Compose
+
+## Important note clone the main branch to run the latest version of the project. Remaining branches are the saved versions as a backup. 
