@@ -27,25 +27,7 @@ The track's bar is explicit: *"Every money action explainable, bounded and gated
 | **Audit trail** | Every AI reasoning step and every payment lifecycle event is persisted to a structured `agent_audit_log` table, queryable via API. |
 | **Graceful failure** | Over-budget requests, no-match searches, and unclear/off-topic input are all handled with clear messaging — never a crash or a blank screen. |
 
-## Demo flow
 
-```
-User: "find headphones under 5000" (typed or spoken)
-  → Agent parses intent (1 Gemini API call)
-  → Backend searches catalog, filters by budget, ranks by rating
-  → Grid narrows to show matches: best option highlighted as "AI Pick",
-    others as alternatives, any over-budget option shown dimmed and
-    struck through — never hidden
-  → User adds the pick to cart
-  → A lightweight cross-sell suggestion appears: 1-2 related, in-stock
-    products from the same category ("Complete your setup") — a manual
-    click away, never auto-added
-  → User checks out (address form, price breakdown)
-  → Backend creates a real Razorpay Test Mode Payment Link
-  → User completes payment on Razorpay's own hosted page
-  → Backend independently verifies payment status with Razorpay
-  → Order confirmed only once Razorpay confirms — never before
-```
 
 ---
 
